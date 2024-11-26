@@ -1,12 +1,6 @@
 package com.kir138.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "report_one_the_books_token")
+@Table(name = "borrow_report")
 public class BorrowReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,23 +25,23 @@ public class BorrowReport {
 
     @ManyToOne
     @JoinColumn(name = "reader_id")
-    private Reader readerId;
+    private Reader reader;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    private Book bookId;
-    private Boolean returnStatus;
+    private Book book;
+    private Boolean isReturn;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BorrowReport that = (BorrowReport) o;
-        return Objects.equals(id, that.id) && Objects.equals(borrowDate, that.borrowDate) && Objects.equals(returnStatus, that.returnStatus);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, borrowDate, returnStatus);
+        return Objects.hash(id);
     }
 }

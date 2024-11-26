@@ -1,22 +1,35 @@
 package com.kir138.connect;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-    public static final SessionFactory sessionFactory = buildSessionFactory();
+    private static final String PERSISTENCE_UNIT_NAME = "library";
+    private static final EntityManagerFactory emf;
 
-    private static SessionFactory buildSessionFactory() {
+    static {
         try {
-            return new Configuration().configure().buildSessionFactory();
-        }
-        catch (Throwable ex) {
-            System.err.println("Initial SessionFactory creation failed." + ex);
-            throw new ExceptionInInitializerError(ex);
+            emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError("Инициализация EntityManagerFactory не удалась");
         }
     }
 
-    public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return emf;
+    }
+
+    public static EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+
+    public static void shutdown() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
     }
 }
