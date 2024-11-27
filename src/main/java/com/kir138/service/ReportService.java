@@ -1,11 +1,10 @@
 package com.kir138.service;
 
 import com.kir138.connect.HibernateUtil;
-import com.kir138.entity.BorrowReport;
-import com.kir138.entityDto.BorrowReportDto;
-import com.kir138.mapper.BorrowReportMapper;
+import com.kir138.model.entity.Book;
+import com.kir138.model.dto.BookDto;
+import com.kir138.mapper.BookMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -13,19 +12,21 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class ReportService {
-    private final BorrowReportMapper borrowReportMapper;
+    private final BookMapper bookMapper;
 
     /**
      * Метод для получения списка всех книг, взятых читателями за последний месяц.
      */
-    //тут наверное вообще сделать неправильно. Нужно возвращать Book а не BorrowReport
-    public List<BorrowReportDto> borrowedBooksLastMonth() {
+    public List<BookDto> getBooksBorrowedInLastMonth() {
         try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
             LocalDate localDate = LocalDate.now().minusMonths(1);
-            String hql = "from BorrowReport br where br.borrowDate >= :date";
-            TypedQuery<BorrowReport> typedQuery = entityManager.createQuery(hql, BorrowReport.class);
-            typedQuery.setParameter("date", localDate);
-            return typedQuery.getResultStream().map(borrowReportMapper::toBorrowReport).toList();
+            String hql = "select br.book from BorrowReport br where br.borrowDate >= :date";
+
+            return entityManager.createQuery(hql, Book.class)
+                    .setParameter("date", localDate)
+                    .getResultStream()
+                    .map(bookMapper::toBook)
+                    .toList();
         }
     }
 
@@ -33,14 +34,16 @@ public class ReportService {
      * Метод для получения списка книг, которые находятся на руках у читателей
      * дольше двух недель (учитывая дату выдачи).
      */
-    //тут тоже
-    public List<BorrowReport> borrowedBooksFourteenDays() {
+    public List<BookDto> getOverdueBooksMoreThanTwoWeeks() {
         try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
             LocalDate localDate = LocalDate.now().minusDays(14);
-            String hql = "from BorrowReport br where br.borrowDate <= :date and br.returnStatus = false";
-            TypedQuery<BorrowReport> typedQuery = entityManager.createQuery(hql, BorrowReport.class);
-            typedQuery.setParameter("date", localDate);
-            return typedQuery.getResultList();
+            String hql = "select br.book from BorrowReport br where br.borrowDate <= :date and br.isReturn = false";
+
+            return entityManager.createQuery(hql, Book.class)
+                    .setParameter("date", localDate)
+                    .getResultStream()
+                    .map(bookMapper::toBook)
+                    .toList();
         }
     }
 }

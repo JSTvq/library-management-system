@@ -1,11 +1,10 @@
 package com.kir138.repository;
 
 import com.kir138.connect.HibernateUtil;
-import com.kir138.entity.Book;
-import com.kir138.entity.Reader;
+import com.kir138.model.entity.Book;
+import com.kir138.model.entity.Reader;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,19 +69,17 @@ public class ReaderRepositoryImpl implements ReaderRepository {
      * Оптимизация с использованием JOIN FETCH
      */
     @Override
-    public List<Reader> getAllReadersWithBooksOptimized() {
+    public List<Reader> getAllReadersWithBorrowedBooks() {
         List<Reader> readers = null;
         try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
             EntityTransaction entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
             try {
-                TypedQuery<Reader> query = entityManager.createQuery(
-                        "from Reader r join fetch r.borrowedBooks", Reader.class);
-                readers = query.getResultList();
-
+                readers = entityManager.createQuery("from Reader r join fetch r.borrowedBooks", Reader.class)
+                        .getResultList();
                 entityTransaction.commit();
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException("Ошибка при получении читателей с книгами", e);
             }
         }
         return readers;
@@ -95,7 +92,9 @@ public class ReaderRepositoryImpl implements ReaderRepository {
     @Override
     public void displayReadersAndBooks() {
         try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
-            List<Reader> readers = entityManager.createQuery("FROM Reader", Reader.class).getResultList();
+            List<Reader> readers = entityManager.createQuery("FROM Reader", Reader.class)
+                    .getResultList();
+
             for (Reader reader : readers) {
                 System.out.println("Читатель: " + reader.getName());
                 // Книги загружаются только при доступе к borrowedBooks

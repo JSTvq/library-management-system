@@ -1,9 +1,8 @@
 package com.kir138.mapper;
 
-import com.kir138.entity.Book;
-import com.kir138.entity.BorrowReport;
-import com.kir138.entityDto.BookDto;
-import com.kir138.entityDto.BorrowReportDto;
+import com.kir138.model.entity.Book;
+import com.kir138.model.dto.BookDto;
+
 
 public class BookMapper {
     public BookDto toBook(Book book) {

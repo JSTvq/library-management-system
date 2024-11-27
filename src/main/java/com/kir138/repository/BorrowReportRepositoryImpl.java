@@ -1,7 +1,7 @@
 package com.kir138.repository;
 
 import com.kir138.connect.HibernateUtil;
-import com.kir138.entity.BorrowReport;
+import com.kir138.model.entity.BorrowReport;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;

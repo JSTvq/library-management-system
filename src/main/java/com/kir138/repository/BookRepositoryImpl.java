@@ -1,7 +1,7 @@
 package com.kir138.repository;
 
 import com.kir138.connect.HibernateUtil;
-import com.kir138.entity.Book;
+import com.kir138.model.entity.Book;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 

@@ -1,12 +1,12 @@
 package com.kir138.service;
 
 import com.kir138.connect.HibernateUtil;
-import com.kir138.entity.Book;
-import com.kir138.entity.BorrowReport;
-import com.kir138.entity.Reader;
-import com.kir138.entityDto.BookDto;
-import com.kir138.entityDto.BorrowReportDto;
-import com.kir138.entityDto.ReaderDto;
+import com.kir138.model.entity.Book;
+import com.kir138.model.entity.BorrowReport;
+import com.kir138.model.entity.Reader;
+import com.kir138.model.dto.BookDto;
+import com.kir138.model.dto.BorrowReportDto;
+import com.kir138.model.dto.ReaderDto;
 import com.kir138.mapper.BookMapper;
 import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.mapper.ReaderMapper;
@@ -14,6 +14,7 @@ import com.kir138.repository.BookRepositoryImpl;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import com.kir138.repository.ReaderRepositoryImpl;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
 
@@ -96,21 +97,25 @@ public class LibraryService {
     /**
      * Метод для того, чтобы читатель мог брать книги (обновление таблицы borrowedBooks).
      */
-    /*public void updateBorrowedBooks(Long readId, Long bookId) {
+    public void borrowBook(Long readId, Long bookId) {
 
         try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
             EntityTransaction entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
             try {
-                Reader reader = readerRepositoryImpl.findById(readId).orElseThrow();
-                Book book = bookRepositoryImpl.findById(bookId).orElseThrow();
+
+                Reader reader = readerRepositoryImpl.findById(readId)
+                        .orElseThrow(() -> new EntityNotFoundException("Читатель не найден"));
+                Book book = bookRepositoryImpl.findById(bookId)
+                        .orElseThrow(() -> new EntityNotFoundException("Книга не найдена"));
 
                 book.setReader(reader);
                 bookRepositoryImpl.save(book);
 
-                BorrowReport borrowReport = borrowReportRepositoryImpl.findExistingBorrowReport(bookId).orElseThrow();
+                Optional<BorrowReport> borrowReportOpt = borrowReportRepositoryImpl.findExistingBorrowReport(bookId);
 
-                if (borrowReport.getId() != null) {
+                if (borrowReportOpt.isPresent()) {
+                    BorrowReport borrowReport = borrowReportOpt.get();
                     borrowReport.setIsReturn(false);
                     borrowReport.setReader(reader);
                     borrowReportRepositoryImpl.save(borrowReport);
@@ -129,62 +134,31 @@ public class LibraryService {
                 throw new RuntimeException(e);
             }
         }
-    }*/
-
-    public void updateBorrowedBooks(Long readId, Long bookId) {
-
-                Reader reader = readerRepositoryImpl.findById(readId).orElseThrow();
-                Book book = bookRepositoryImpl.findById(bookId).orElseThrow();
-
-                book.setReader(reader);
-                bookRepositoryImpl.save(book);
-
-        Optional<BorrowReport> borrowReportOpt = borrowReportRepositoryImpl.findExistingBorrowReport(bookId);
-
-                if (borrowReportOpt.isPresent()) {
-                    BorrowReport borrowReport = borrowReportOpt.get();
-                    borrowReport.setIsReturn(false);
-                    borrowReport.setReader(reader);
-                    borrowReportRepositoryImpl.save(borrowReport);
-                } else {
-                    BorrowReport newBorrowReport = BorrowReport.builder()
-                            .borrowDate(LocalDate.now())
-                            .reader(reader)
-                            .book(book)
-                            .isReturn(false)
-                            .build();
-                    borrowReportRepositoryImpl.save(newBorrowReport);
-                }
-        }
+    }
 
     /**
      * Метод для возврата книги (обновление статуса returnStatus).
      */
-    public void updateReturnStatus(Long reportId) {
+    public void returnBook(Long reportId) {
 
         try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
             EntityTransaction entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
             try {
-                Optional<BorrowReport> borrowReport = borrowReportRepositoryImpl.findById(reportId);
+                BorrowReport borrowReport = borrowReportRepositoryImpl.findById(reportId)
+                        .orElseThrow(() -> new EntityNotFoundException("Отчет не найден"));
 
-                if (borrowReport.isEmpty()) {
-                    System.out.println("такого id нет в системе");
-                    return;
-                }
+                borrowReport.setIsReturn(true);
+                borrowReport.setReader(null);
+                borrowReportRepositoryImpl.save(borrowReport);
 
-                BorrowReport borrowReport1 = borrowReport.get();
-                borrowReport1.setIsReturn(true);
-                borrowReport1.setReader(null);
-                borrowReportRepositoryImpl.save(borrowReport1);
-
-                Book book = borrowReport1.getBook();
+                Book book = borrowReport.getBook();
                 book.setReader(null);
                 bookRepositoryImpl.save(book);
                 entityTransaction.commit();
             } catch (Exception e) {
                 entityTransaction.rollback();
-                throw new RuntimeException(e);
+                throw new RuntimeException("Ошибка при возврате книги", e);
             }
         }
     }

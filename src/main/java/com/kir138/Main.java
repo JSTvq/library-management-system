@@ -1,8 +1,5 @@
 package com.kir138;
 
-import com.kir138.entity.Book;
-import com.kir138.entity.BorrowReport;
-import com.kir138.entity.Reader;
 import com.kir138.mapper.BookMapper;
 import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.mapper.ReaderMapper;
@@ -10,7 +7,7 @@ import com.kir138.repository.BookRepositoryImpl;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import com.kir138.repository.ReaderRepositoryImpl;
 import com.kir138.service.LibraryService;
-import java.util.List;
+import com.kir138.service.ReportService;
 
 
 public class Main {
@@ -21,6 +18,7 @@ public class Main {
         ReaderMapper readerMapper = new ReaderMapper();
         BookMapper bookMapper = new BookMapper();
         BorrowReportMapper borrowReportMapper = new BorrowReportMapper();
+        ReportService reportService = new ReportService(bookMapper);
         LibraryService libraryService = new LibraryService(readerRepositoryImpl, bookRepositoryImpl, borrowReportRepositoryImpl,
                 bookMapper, borrowReportMapper, readerMapper);
 
@@ -68,15 +66,7 @@ public class Main {
                 .email("почта4")
                 .build());*/
 
-        /*List<Reader> readers = readerRepositoryImpl.getAllReadersWithBooksOptimized();
-        for (Reader reader : readers) {
-            System.out.println(reader);
-        }*/
 
-        //libraryService.updateBorrowedBooks(1L, 1L);
-        //libraryService.updateBorrowedBooks(2L, 2L);
-        //libraryService.updateBorrowedBooks(3L, 3L);
 
-        //libraryService.updateReturnStatus(2L);
     }
 }

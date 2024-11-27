@@ -1,4 +1,4 @@
-package com.kir138.entity;
+package com.kir138.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,5 +45,15 @@ public class Book {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", year=" + year +
+                '}';
     }
 }

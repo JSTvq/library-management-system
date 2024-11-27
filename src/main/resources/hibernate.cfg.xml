@@ -13,8 +13,8 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <mapping class="com.kir138.entity.Book"/>
-        <mapping class="com.kir138.entity.Reader"/>
-        <mapping class="com.kir138.entity.BorrowReport"/>
+        <mapping class="com.kir138.model.entity.Book"/>
+        <mapping class="com.kir138.model.entity.Reader"/>
+        <mapping class="com.kir138.model.entity.BorrowReport"/>
     </session-factory>
 </hibernate-configuration>

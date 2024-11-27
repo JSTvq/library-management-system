@@ -1,4 +1,4 @@
-package com.kir138.entity;
+package com.kir138.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,5 +43,15 @@ public class BorrowReport {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "BorrowReport{" +
+                "id=" + id +
+                ", borrowDate=" + borrowDate +
+                ", reader=" + reader +
+                ", isReturn=" + isReturn +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
 package com.kir138.repository;
 
-import com.kir138.entity.BorrowReport;
+import com.kir138.model.entity.BorrowReport;
 
 import java.util.Optional;
 
