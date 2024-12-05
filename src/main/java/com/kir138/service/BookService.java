@@ -1,15 +1,11 @@
 package com.kir138.service;
 
 import com.kir138.connect.HibernateUtil;
+import com.kir138.mapper.BookMapper;
+import com.kir138.model.dto.BookDto;
 import com.kir138.model.entity.Book;
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.model.entity.Reader;
-import com.kir138.model.dto.BookDto;
-import com.kir138.model.dto.BorrowReportDto;
-import com.kir138.model.dto.ReaderDto;
-import com.kir138.mapper.BookMapper;
-import com.kir138.mapper.BorrowReportMapper;
-import com.kir138.mapper.ReaderMapper;
 import com.kir138.repository.BookRepositoryImpl;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import com.kir138.repository.ReaderRepositoryImpl;
@@ -23,55 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class LibraryService {
-    private final ReaderRepositoryImpl readerRepositoryImpl;
+public class BookService {
     private final BookRepositoryImpl bookRepositoryImpl;
-    private final BorrowReportRepositoryImpl borrowReportRepositoryImpl;
     private final BookMapper bookMapper;
-    private final BorrowReportMapper borrowReportMapper;
-    private final ReaderMapper readerMapper;
-
-    public ReaderDto saveOrUpdateReader(Reader reader) {
-        return readerMapper.toReader(readerRepositoryImpl.save(reader));
-    }
-
-    public List<ReaderDto> getAllReaders() {
-        return readerRepositoryImpl.findAll()
-                .stream()
-                .map(readerMapper::toReader)
-                .toList();
-    }
-
-    public ReaderDto getReaderById(Long id) {
-        return readerRepositoryImpl.findById(id)
-                .map(readerMapper::toReader)
-                .orElseThrow(() -> new IllegalArgumentException("Читатель с таким id не найден"));
-    }
-
-    public void deleteReader(Long id) {
-        readerRepositoryImpl.deleteById(id);
-    }
-
-    public BorrowReportDto saveOrUpdateBorrowReport(BorrowReport borrowReport) {
-        return borrowReportMapper.toBorrowReport(borrowReportRepositoryImpl.save(borrowReport));
-    }
-
-    public List<BorrowReportDto> getAllBorrowReport() {
-        return borrowReportRepositoryImpl.findAll()
-                .stream()
-                .map(borrowReportMapper::toBorrowReport)
-                .toList();
-    }
-
-    public BorrowReportDto getBorrowReportById(Long id) {
-        return borrowReportRepositoryImpl.findById(id)
-                .map(borrowReportMapper::toBorrowReport)
-                .orElseThrow(() -> new IllegalArgumentException("Отчет с таким id не найден"));
-    }
-
-    public void deleteBorrowReport(Long id) {
-        borrowReportRepositoryImpl.deleteById(id);
-    }
+    private final BorrowReportRepositoryImpl borrowReportRepositoryImpl;
+    private final ReaderRepositoryImpl readerRepositoryImpl;
 
     public BookDto saveOrUpdateBook(Book book) {
         return bookMapper.toBook(bookRepositoryImpl.save(book));

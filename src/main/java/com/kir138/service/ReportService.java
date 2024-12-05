@@ -18,7 +18,7 @@ public class ReportService {
      * Метод для получения списка всех книг, взятых читателями за последний месяц.
      */
     public List<BookDto> getBooksBorrowedInLastMonth() {
-        try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
+        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
             LocalDate localDate = LocalDate.now().minusMonths(1);
             String hql = "select br.book from BorrowReport br where br.borrowDate >= :date";
 
@@ -35,7 +35,7 @@ public class ReportService {
      * дольше двух недель (учитывая дату выдачи).
      */
     public List<BookDto> getOverdueBooksMoreThanTwoWeeks() {
-        try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
+        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
             LocalDate localDate = LocalDate.now().minusDays(14);
             String hql = "select br.book from BorrowReport br where br.borrowDate <= :date and br.isReturn = false";
 

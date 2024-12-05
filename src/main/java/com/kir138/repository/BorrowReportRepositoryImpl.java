@@ -9,41 +9,10 @@ import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
-public class BorrowReportRepositoryImpl implements BorrowReportRepository {
+public class BorrowReportRepositoryImpl extends SimpleCrudRepository<BorrowReport, Long> implements BorrowReportRepository {
 
-    @Override
-    public BorrowReport save(BorrowReport borrowReport) {
-        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
-            EntityTransaction entityTransaction = entityManager.getTransaction();
-            entityTransaction.begin();
-            try {
-                entityManager.merge(borrowReport);
-                entityTransaction.commit();
-                return borrowReport;
-            } catch (Exception e) {
-                entityTransaction.rollback();
-                throw new RuntimeException("сохранение не произошло");
-            }
-        }
-    }
-
-    @Override
-    public List<BorrowReport> findAll() {
-        try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
-            return entityManager.createQuery("from BorrowReport", BorrowReport.class).getResultList();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public Optional<BorrowReport> findById(Long id) {
-        try(EntityManager entityManager = HibernateUtil.getEntityManager()) {
-            BorrowReport borrowReport = entityManager.find(BorrowReport.class, id);
-            return Optional.ofNullable(borrowReport);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public BorrowReportRepositoryImpl(Class<BorrowReport> entityClass) {
+        super(entityClass);
     }
 
     @Override
@@ -56,22 +25,6 @@ public class BorrowReportRepositoryImpl implements BorrowReportRepository {
             return Optional.ofNullable(borrowReport);
         } catch (NoResultException e) {
             return Optional.empty();
-        }
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
-            EntityTransaction entityTransaction = entityManager.getTransaction();
-            entityTransaction.begin();
-            try {
-                BorrowReport deleteBorrowReport = entityManager.getReference(BorrowReport.class, id);
-                entityManager.remove(deleteBorrowReport);
-                entityTransaction.commit();
-            } catch (Exception e) {
-                entityTransaction.rollback();
-                throw new RuntimeException("удаление не произошло");
-            }
         }
     }
 }

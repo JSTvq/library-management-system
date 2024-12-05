@@ -3,24 +3,28 @@ package com.kir138;
 import com.kir138.mapper.BookMapper;
 import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.mapper.ReaderMapper;
+import com.kir138.model.entity.Book;
+import com.kir138.model.entity.BorrowReport;
+import com.kir138.model.entity.Reader;
 import com.kir138.repository.BookRepositoryImpl;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import com.kir138.repository.ReaderRepositoryImpl;
-import com.kir138.service.LibraryService;
+import com.kir138.service.ReaderService;
 import com.kir138.service.ReportService;
+import com.kir138.servlet.ConfigureServerServlet;
 
 
 public class Main {
-    public static void main(String[] args) {
-        ReaderRepositoryImpl readerRepositoryImpl = new ReaderRepositoryImpl();
-        BookRepositoryImpl bookRepositoryImpl = new BookRepositoryImpl();
-        BorrowReportRepositoryImpl borrowReportRepositoryImpl = new BorrowReportRepositoryImpl();
+    public static void main(String[] args) throws Exception {
+
+        ReaderRepositoryImpl readerRepositoryImpl = new ReaderRepositoryImpl(Reader.class);
+        BookRepositoryImpl bookRepositoryImpl = new BookRepositoryImpl(Book.class);
+        BorrowReportRepositoryImpl borrowReportRepositoryImpl = new BorrowReportRepositoryImpl(BorrowReport.class);
         ReaderMapper readerMapper = new ReaderMapper();
         BookMapper bookMapper = new BookMapper();
         BorrowReportMapper borrowReportMapper = new BorrowReportMapper();
         ReportService reportService = new ReportService(bookMapper);
-        LibraryService libraryService = new LibraryService(readerRepositoryImpl, bookRepositoryImpl, borrowReportRepositoryImpl,
-                bookMapper, borrowReportMapper, readerMapper);
+        ReaderService readerService = new ReaderService(readerRepositoryImpl, readerMapper);
 
         /*bookRepositoryImpl.save(Book.builder()
                 .year(2001)
@@ -66,7 +70,7 @@ public class Main {
                 .email("почта4")
                 .build());*/
 
-
+        ConfigureServerServlet.configureServer(readerService);
 
     }
 }
