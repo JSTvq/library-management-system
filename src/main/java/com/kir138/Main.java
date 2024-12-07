@@ -9,6 +9,8 @@ import com.kir138.model.entity.Reader;
 import com.kir138.repository.BookRepositoryImpl;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import com.kir138.repository.ReaderRepositoryImpl;
+import com.kir138.service.BookService;
+import com.kir138.service.BorrowReportService;
 import com.kir138.service.ReaderService;
 import com.kir138.service.ReportService;
 import com.kir138.servlet.ConfigureServerServlet;
@@ -19,12 +21,14 @@ public class Main {
 
         ReaderRepositoryImpl readerRepositoryImpl = new ReaderRepositoryImpl(Reader.class);
         BookRepositoryImpl bookRepositoryImpl = new BookRepositoryImpl(Book.class);
+        BookMapper bookMapper = new BookMapper();
         BorrowReportRepositoryImpl borrowReportRepositoryImpl = new BorrowReportRepositoryImpl(BorrowReport.class);
         ReaderMapper readerMapper = new ReaderMapper();
-        BookMapper bookMapper = new BookMapper();
         BorrowReportMapper borrowReportMapper = new BorrowReportMapper();
         ReportService reportService = new ReportService(bookMapper);
         ReaderService readerService = new ReaderService(readerRepositoryImpl, readerMapper);
+        BorrowReportService borrowReportService = new BorrowReportService(borrowReportMapper, borrowReportRepositoryImpl);
+        BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
 
         /*bookRepositoryImpl.save(Book.builder()
                 .year(2001)
@@ -70,7 +74,10 @@ public class Main {
                 .email("почта4")
                 .build());*/
 
-        ConfigureServerServlet.configureServer(readerService);
+
+
+
+        //ConfigureServerServlet.configureServer(readerService);
 
     }
 }

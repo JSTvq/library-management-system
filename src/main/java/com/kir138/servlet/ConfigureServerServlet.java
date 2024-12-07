@@ -13,7 +13,7 @@ public class ConfigureServerServlet {
         handler.setContextPath("/");
         ObjectMapper objectMapper = new ObjectMapper();
         ReaderServlet readerServlet = new ReaderServlet(readerService, objectMapper);
-        handler.addServlet(new ServletHolder(readerServlet), "/api/v1/reader/*");
+        handler.addServlet(new ServletHolder(readerServlet), "/api/v1/reader");
         server.setHandler(handler);
 
         server.start();

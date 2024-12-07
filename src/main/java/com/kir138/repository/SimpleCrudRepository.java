@@ -45,7 +45,7 @@ public class SimpleCrudRepository<T, K> implements CrudRepository<T, K> {
             T reader = entityManager.find(entityClass, id);
             return Optional.ofNullable(reader);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("не найден пользователь" + e);
         }
     }
 

@@ -2,17 +2,21 @@ package com.kir138.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kir138.model.dto.ReaderDto;
+import com.kir138.model.dto.ReaderRegistrationRq;
 import com.kir138.model.entity.Reader;
 import com.kir138.service.ReaderService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 //curl GET http://localhost:8080/api/v1/reader/312
+@Slf4j
 public class ReaderServlet extends HttpServlet {
     private final ReaderService readerService;
     private final ObjectMapper objectMapper;
@@ -26,31 +30,37 @@ public class ReaderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse resp) throws ServletException, IOException {
 
-        long id = Long.parseLong(req.getParameter("id"));
-        ReaderDto readerDto = readerService.getReaderById(id);
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        try {
+            long id = Long.parseLong(req.getParameter("id"));
+            ReaderDto readerDto = readerService.getReaderById(id);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        /*if (idParam == null) {
-            List<ReaderDto> readerDto = readerService.getAllReaders();
-            resp.setStatus(HttpServletResponse.SC_OK);
-            objectMapper.writeValue(resp.getWriter(), readerDto);
-        } else {*/
             resp.setStatus(HttpServletResponse.SC_OK);
             objectMapper.writeValue(resp.getWriter(), readerDto);
 
-        resp.getWriter().close();
+        } catch (Exception e) {
+            resp.setContentType("text/plain");
+            resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("пользователь не найден, ошибка 9999999");
+            resp.getWriter().close();
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req,
                           HttpServletResponse resp) throws ServletException, IOException {
 
-        Reader reader = parseReaderFromRequest(req);
+        log.info("POST /api/v1/reader {}", req);
+
+        ReaderRegistrationRq reader = parseReaderFromRequest(req);
         ReaderDto readerDto = readerService.saveOrUpdateReader(reader);
         objectMapper.writeValue(resp.getWriter(), readerDto);
         resp.setStatus(HttpServletResponse.SC_CREATED);
         resp.getWriter().close();
+
+        log.info("POST /api/v1/reader {}", resp);
     }
 
     @Override
@@ -71,8 +81,13 @@ public class ReaderServlet extends HttpServlet {
         resp.getWriter().close();
     }
 
-    private Reader parseReaderFromRequest(HttpServletRequest req) {
-        // Реализация парсинга JSON в объект Book
-        return new Reader();
+    private ReaderRegistrationRq parseReaderFromRequest(HttpServletRequest req) {
+        try (Scanner scanner = new Scanner(req.getInputStream(), StandardCharsets.UTF_8)) {
+            String string = scanner.useDelimiter("\\A").next();
+            return objectMapper.readValue(string, ReaderRegistrationRq.class);
+        } catch (IOException e) {
+            log.info("Error while parsing request {}", req, e);
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.kir138.service;
 import com.kir138.connect.HibernateUtil;
 import com.kir138.mapper.BookMapper;
 import com.kir138.model.dto.BookDto;
+import com.kir138.model.dto.BookRegistrationRq;
 import com.kir138.model.entity.Book;
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.model.entity.Reader;
@@ -24,6 +25,11 @@ public class BookService {
     private final BookMapper bookMapper;
     private final BorrowReportRepositoryImpl borrowReportRepositoryImpl;
     private final ReaderRepositoryImpl readerRepositoryImpl;
+
+    public BookDto saveOrUpdateBook(BookRegistrationRq request) {
+        Book book = bookMapper.toBook(request);
+        return bookMapper.toBook(bookRepositoryImpl.save(book));
+    }
 
     public BookDto saveOrUpdateBook(Book book) {
         return bookMapper.toBook(bookRepositoryImpl.save(book));

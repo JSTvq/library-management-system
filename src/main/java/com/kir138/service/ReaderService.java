@@ -1,6 +1,7 @@
 package com.kir138.service;
 
 import com.kir138.connect.HibernateUtil;
+import com.kir138.model.dto.ReaderRegistrationRq;
 import com.kir138.model.entity.Book;
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.model.entity.Reader;
@@ -20,6 +21,11 @@ import java.util.Optional;
 public class ReaderService {
     private final ReaderRepositoryImpl readerRepositoryImpl;
     private final ReaderMapper readerMapper;
+
+    public ReaderDto saveOrUpdateReader(ReaderRegistrationRq request) {
+        Reader reader = readerMapper.toReader(request);
+        return readerMapper.toReader(readerRepositoryImpl.save(reader));
+    }
 
     public ReaderDto saveOrUpdateReader(Reader reader) {
         return readerMapper.toReader(readerRepositoryImpl.save(reader));
