@@ -33,7 +33,6 @@ public class BookServlet extends HttpServlet {
 
         BookRegistrationRq bookRegistrationRq = parseBookFromRequest(req);
         BookDto bookDto = bookService.saveOrUpdateBook(bookRegistrationRq);
-
         try {
             objectMapper.writeValue(resp.getWriter(), bookDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -41,8 +40,6 @@ public class BookServlet extends HttpServlet {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     @Override

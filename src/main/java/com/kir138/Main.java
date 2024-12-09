@@ -72,12 +72,12 @@ public class Main {
         readerRepositoryImpl.save(Reader.builder()
                 .name("человек4")
                 .email("почта4")
-                .build());*/
-
-
-
+                .build());
+         */
 
         //ConfigureServerServlet.configureServer(readerService);
 
-    }
+        //bookService.borrowBook(1L, 2L);
+
+}
 }

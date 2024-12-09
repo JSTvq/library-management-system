@@ -62,10 +62,10 @@ public class BookService {
             entityTransaction.begin();
             try {
 
-                Reader reader = readerRepositoryImpl.findById(readId)
-                        .orElseThrow(() -> new EntityNotFoundException("Читатель не найден"));
-                Book book = bookRepositoryImpl.findById(bookId)
-                        .orElseThrow(() -> new EntityNotFoundException("Книга не найдена"));
+                Reader reader = readerRepositoryImpl.findById(readId).orElseThrow(()
+                        -> new EntityNotFoundException("Читатель не найден"));
+                Book book = bookRepositoryImpl.findById(bookId).orElseThrow(()
+                        -> new EntityNotFoundException("Книга не найдена"));
 
                 book.setReader(reader);
                 bookRepositoryImpl.save(book);
@@ -78,12 +78,7 @@ public class BookService {
                     borrowReport.setReader(reader);
                     borrowReportRepositoryImpl.save(borrowReport);
                 } else {
-                    BorrowReport newBorrowReport = BorrowReport.builder()
-                            .borrowDate(LocalDate.now())
-                            .reader(reader)
-                            .book(book)
-                            .isReturn(false)
-                            .build();
+                    BorrowReport newBorrowReport = BorrowReport.builder().borrowDate(LocalDate.now()).reader(reader).book(book).isReturn(false).build();
                     borrowReportRepositoryImpl.save(newBorrowReport);
                 }
                 entityTransaction.commit();
