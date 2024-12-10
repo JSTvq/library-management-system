@@ -15,6 +15,8 @@ import com.kir138.service.ReaderService;
 import com.kir138.service.ReportService;
 import com.kir138.servlet.ConfigureServerServlet;
 
+import java.time.LocalDate;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -25,7 +27,7 @@ public class Main {
         BorrowReportRepositoryImpl borrowReportRepositoryImpl = new BorrowReportRepositoryImpl(BorrowReport.class);
         ReaderMapper readerMapper = new ReaderMapper();
         BorrowReportMapper borrowReportMapper = new BorrowReportMapper();
-        ReportService reportService = new ReportService(bookMapper);
+        ReportService reportService = new ReportService(bookMapper, borrowReportMapper);
         ReaderService readerService = new ReaderService(readerRepositoryImpl, readerMapper);
         BorrowReportService borrowReportService = new BorrowReportService(borrowReportMapper, borrowReportRepositoryImpl);
         BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
@@ -77,7 +79,13 @@ public class Main {
 
         //ConfigureServerServlet.configureServer(readerService);
 
+        //bookService.borrowBook(1L, 1L);
         //bookService.borrowBook(1L, 2L);
 
-}
+        LocalDate localDate1 = LocalDate.now();
+        LocalDate localDate2 = LocalDate.now();
+        System.out.println(reportService.findByReaderIdAndBorrowDateBetween(1L, localDate1, localDate2));
+        System.out.println(reportService.getBooksBorrowedInLastMonth());
+
+    }
 }

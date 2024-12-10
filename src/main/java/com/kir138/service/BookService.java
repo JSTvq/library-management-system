@@ -61,7 +61,6 @@ public class BookService {
             EntityTransaction entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
             try {
-
                 Reader reader = readerRepositoryImpl.findById(readId).orElseThrow(()
                         -> new EntityNotFoundException("Читатель не найден"));
                 Book book = bookRepositoryImpl.findById(bookId).orElseThrow(()
@@ -100,6 +99,10 @@ public class BookService {
             try {
                 BorrowReport borrowReport = borrowReportRepositoryImpl.findById(reportId)
                         .orElseThrow(() -> new EntityNotFoundException("Отчет не найден"));
+
+                if (borrowReport.getIsReturn()) {
+                    throw new IllegalStateException("Книга уже была возвращена");
+                }
 
                 borrowReport.setIsReturn(true);
                 borrowReport.setReader(null);
