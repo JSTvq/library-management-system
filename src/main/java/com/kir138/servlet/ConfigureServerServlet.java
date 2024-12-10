@@ -39,9 +39,12 @@ public class ConfigureServerServlet {
         ReaderGetBookServlet readerGetBookServlet = new ReaderGetBookServlet(bookService,
                 readerService, borrowReportService, objectMapper);
         ReaderReturnBookServlet readerReturnBookServlet = new ReaderReturnBookServlet(bookService);
+        BorrowReportServlet borrowReportServlet = new BorrowReportServlet(reportService, objectMapper);
+
         handler.addServlet(new ServletHolder(readerServlet), "/api/v1/reader");
         handler.addServlet(new ServletHolder(readerGetBookServlet), "/api/v1/readerId/bookId");
-        handler.addServlet(new ServletHolder(readerReturnBookServlet), "/api/v1/reportId");
+        handler.addServlet(new ServletHolder(readerReturnBookServlet), "/api/v1/readerReturn");
+        handler.addServlet(new ServletHolder(readerReturnBookServlet), "/api/v1/reports");
         server.setHandler(handler);
 
         server.start();
