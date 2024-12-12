@@ -28,23 +28,24 @@ public class ConfigureServerServlet {
         BorrowReportMapper borrowReportMapper = new BorrowReportMapper();
         ReportService reportService = new ReportService(bookMapper, borrowReportMapper);
         ReaderService readerService = new ReaderService(readerRepositoryImpl, readerMapper);
-        BorrowReportService borrowReportService = new BorrowReportService(borrowReportMapper, borrowReportRepositoryImpl);
         BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
 
         Server server = new Server(8080);
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handler.setContextPath("/");
         ObjectMapper objectMapper = new ObjectMapper();
-        ReaderServlet readerServlet = new ReaderServlet(readerService, objectMapper);
-        ReaderGetBookServlet readerGetBookServlet = new ReaderGetBookServlet(bookService,
-                readerService, borrowReportService, objectMapper);
-        ReaderReturnBookServlet readerReturnBookServlet = new ReaderReturnBookServlet(bookService);
-        BorrowReportServlet borrowReportServlet = new BorrowReportServlet(reportService, objectMapper);
+        ReaderController readerController = new ReaderController(readerService, objectMapper);
+        BorrowController borrowController = new BorrowController(bookService, objectMapper);
+        ReturnController returnController = new ReturnController(bookService, objectMapper);
+        BorrowReportController borrowReportController = new BorrowReportController(reportService, objectMapper);
+        BookController bookController = new BookController(bookService, objectMapper);
 
-        handler.addServlet(new ServletHolder(readerServlet), "/api/v1/reader");
-        handler.addServlet(new ServletHolder(readerGetBookServlet), "/api/v1/readerId/bookId");
-        handler.addServlet(new ServletHolder(readerReturnBookServlet), "/api/v1/readerReturn");
-        handler.addServlet(new ServletHolder(readerReturnBookServlet), "/api/v1/reports");
+        handler.addServlet(new ServletHolder(readerController), "/api/v1/readers");
+        handler.addServlet(new ServletHolder(bookController), "/api/v1/books");
+        handler.addServlet(new ServletHolder(borrowController), "/api/v1/borrows");
+        handler.addServlet(new ServletHolder(returnController), "/api/v1/returns");
+        handler.addServlet(new ServletHolder(borrowReportController), "/api/v1/borrow-reports");
+
         server.setHandler(handler);
 
         server.start();

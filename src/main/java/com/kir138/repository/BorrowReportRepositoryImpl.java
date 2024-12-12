@@ -39,7 +39,6 @@ public class BorrowReportRepositoryImpl extends SimpleCrudRepository<BorrowRepor
                     .setParameter("fromDate", fromDate)
                     .setParameter("toDate", toDate)
                     .getResultList();
-
         }
     }
 }

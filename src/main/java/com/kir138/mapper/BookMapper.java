@@ -8,6 +8,7 @@ import com.kir138.model.dto.BookDto;
 public class BookMapper {
     public BookDto toBook(Book book) {
         return BookDto.builder()
+                .id(book.getId())
                 .author(book.getAuthor())
                 .title(book.getTitle())
                 .year(book.getYear())

@@ -27,10 +27,6 @@ public class ReaderService {
         return readerMapper.toReader(readerRepositoryImpl.save(reader));
     }
 
-    public ReaderDto saveOrUpdateReader(Reader reader) {
-        return readerMapper.toReader(readerRepositoryImpl.save(reader));
-    }
-
     public List<ReaderDto> getAllReaders() {
         return readerRepositoryImpl.findAll()
                 .stream()

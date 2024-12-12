@@ -32,7 +32,7 @@ public class Main {
         BorrowReportService borrowReportService = new BorrowReportService(borrowReportMapper, borrowReportRepositoryImpl);
         BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
 
-        /*bookRepositoryImpl.save(Book.builder()
+        bookRepositoryImpl.save(Book.builder()
                 .year(2001)
                 .title("Книга1")
                 .author("Автор1")
@@ -75,17 +75,19 @@ public class Main {
                 .name("человек4")
                 .email("почта4")
                 .build());
-         */
 
-        //ConfigureServerServlet.configureServer(readerService);
 
-        //bookService.borrowBook(1L, 1L);
+
+
+        //ConfigureServerServlet.configureServer();
+
+        //bookService.borrowBook(4L, 1L);
         //bookService.borrowBook(1L, 2L);
 
-        LocalDate localDate1 = LocalDate.now();
-        LocalDate localDate2 = LocalDate.now();
-        System.out.println(reportService.findByReaderIdAndBorrowDateBetween(1L, localDate1, localDate2));
-        System.out.println(reportService.getBooksBorrowedInLastMonth());
+        //LocalDate localDate1 = LocalDate.now();
+        //LocalDate localDate2 = LocalDate.now();
+        //System.out.println(reportService.findByReaderIdAndBorrowDateBetween(1L, localDate1, localDate2));
+        //System.out.println(reportService.getBooksBorrowedInLastMonth());
 
     }
 }

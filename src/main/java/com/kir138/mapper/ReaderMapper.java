@@ -7,6 +7,7 @@ import com.kir138.model.dto.ReaderDto;
 public class ReaderMapper {
     public ReaderDto toReader(Reader reader) {
         return ReaderDto.builder()
+                .id(reader.getId())
                 .email(reader.getEmail())
                 .name(reader.getName())
                 .build();

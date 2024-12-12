@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ReaderDto {
+    private Long id;
     private String name;
     private String email;
     @Builder.Default

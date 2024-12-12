@@ -1,15 +1,15 @@
 package com.kir138.model.dto;
 
 import com.kir138.model.entity.Reader;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookRegistrationRq {
     private String title;
     private String author;
