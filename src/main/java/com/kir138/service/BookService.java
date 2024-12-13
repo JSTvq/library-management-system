@@ -66,10 +66,15 @@ public class BookService {
                 Book book = bookRepositoryImpl.findById(bookId).orElseThrow(()
                         -> new EntityNotFoundException("Книга не найдена"));
 
+                if (book.getReader() != null) {
+                    throw new IllegalStateException("Книга уже взята другим читателем");
+                }
+
                 book.setReader(reader);
                 bookRepositoryImpl.save(book);
 
-                Optional<BorrowReport> borrowReportOpt = borrowReportRepositoryImpl.findExistingBorrowReport(bookId);
+                Optional<BorrowReport> borrowReportOpt = borrowReportRepositoryImpl
+                        .findExistingBorrowReport(bookId);
 
                 if (borrowReportOpt.isPresent()) {
                     BorrowReport borrowReport = borrowReportOpt.get();
@@ -77,7 +82,12 @@ public class BookService {
                     borrowReport.setReader(reader);
                     borrowReportRepositoryImpl.save(borrowReport);
                 } else {
-                    BorrowReport newBorrowReport = BorrowReport.builder().borrowDate(LocalDate.now()).reader(reader).book(book).isReturn(false).build();
+                    BorrowReport newBorrowReport = BorrowReport.builder()
+                            .borrowDate(LocalDate.now())
+                            .reader(reader)
+                            .book(book)
+                            .isReturn(false)
+                            .build();
                     borrowReportRepositoryImpl.save(newBorrowReport);
                 }
                 entityTransaction.commit();

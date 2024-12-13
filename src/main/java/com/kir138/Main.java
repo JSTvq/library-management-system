@@ -32,7 +32,7 @@ public class Main {
         BorrowReportService borrowReportService = new BorrowReportService(borrowReportMapper, borrowReportRepositoryImpl);
         BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
 
-        bookRepositoryImpl.save(Book.builder()
+        /*bookRepositoryImpl.save(Book.builder()
                 .year(2001)
                 .title("Книга1")
                 .author("Автор1")
@@ -74,12 +74,9 @@ public class Main {
         readerRepositoryImpl.save(Reader.builder()
                 .name("человек4")
                 .email("почта4")
-                .build());
+                .build());*/
 
-
-
-
-        //ConfigureServerServlet.configureServer();
+        ConfigureServerServlet.configureServer();
 
         //bookService.borrowBook(4L, 1L);
         //bookService.borrowBook(1L, 2L);
