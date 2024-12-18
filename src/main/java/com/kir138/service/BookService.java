@@ -31,10 +31,6 @@ public class BookService {
         return bookMapper.toBook(bookRepositoryImpl.save(book));
     }
 
-    public BookDto saveOrUpdateBook(Book book) {
-        return bookMapper.toBook(bookRepositoryImpl.save(book));
-    }
-
     public List<BookDto> getAllBook() {
         return bookRepositoryImpl.findAll()
                 .stream()

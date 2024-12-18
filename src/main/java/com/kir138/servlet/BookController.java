@@ -29,7 +29,7 @@ public class BookController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        log.info("POST /api/v1/reader - начало обработки запроса");
+        log.info("POST /api/v1/books - начало обработки запроса");
 
         try {
             BookRegistrationRq bookRegistrationRq = parseBookFromRequest(req);
@@ -38,10 +38,10 @@ public class BookController extends HttpServlet {
             objectMapper.writeValue(resp.getWriter(), bookDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
 
-            log.info("POST /api/v1/book - книга успешно добавлена/обновлена " +
+            log.info("POST /api/v1/books - книга успешно добавлена/обновлена " +
                     "с id {}", bookDto.getId());
         } catch (JsonProcessingException e) {
-            log.info("POST /api/v1/book - ошибка парсинга JSON", e);
+            log.info("POST /api/v1/books - ошибка парсинга JSON", e);
             sendErrorResponse(resp, HttpServletResponse.SC_BAD_REQUEST,
                     "Некорректный формат JSON");
         }

@@ -12,6 +12,7 @@ import com.kir138.service.BookService;
 import com.kir138.service.BorrowReportService;
 import com.kir138.service.ReportService;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,11 @@ public class ConfigureServerServlet {
         ReaderService readerService = new ReaderService(readerRepositoryImpl, readerMapper);
         BookService bookService = new BookService(bookRepositoryImpl, bookMapper, borrowReportRepositoryImpl, readerRepositoryImpl);
 
-        Server server = new Server(8080);
+        Server server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setHost("0.0.0.0");
+        connector.setPort(8080);
+        server.addConnector(connector);
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         handler.setContextPath("/");
         ObjectMapper objectMapper = new ObjectMapper();

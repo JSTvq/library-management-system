@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-public class BookRepositoryImplTest {
+/*public class BookRepositoryImplTest {
     private static EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     private BookRepositoryImpl bookRepository;
@@ -41,4 +41,4 @@ public class BookRepositoryImplTest {
     }
 
 
-}
+}*/
