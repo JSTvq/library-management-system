@@ -62,8 +62,11 @@ public class ReaderControllerTest extends IntegrationTestBase {
 
         Long readerId;
         try (Response postResponse = client.newCall(postRequest).execute()) {
-            assert postResponse.body() != null;
-            String string = postResponse.body().string();
+
+            String string = null;
+            if (postResponse.body() != null) {
+                string = postResponse.body().string();
+            }
             ReaderDto readerDto = objectMapper.readValue(string, ReaderDto.class);
             readerId = readerDto.getId();
         }
@@ -85,6 +88,47 @@ public class ReaderControllerTest extends IntegrationTestBase {
                             .name("Имя131")
                             .email("kirkir5@yandex.ru")
                             .build());
+        }
+    }
+
+    @SneakyThrows
+    @Test
+    public void deleteReaderShouldWork() throws IOException {
+
+        String json = "{\"name\": \"Имя131\", \"email\": \"kirkir5@yandex.ru\"}";
+        RequestBody body = RequestBody.create(json, MediaType.parse("application/json"));
+
+        Request postRequest = new Request.Builder()
+                .url("http://localhost:8080/api/v1/readers")
+                .post(body)
+                .build();
+
+        Long readerId;
+        try (Response postResponse = client.newCall(postRequest).execute()) {
+            assert postResponse.body() != null;
+            String postResponseBody = postResponse.body().string();
+            ReaderDto savedReader = objectMapper.readValue(postResponseBody, ReaderDto.class);
+            readerId = savedReader.getId();
+        }
+
+
+        Request deleteRequest = new Request.Builder()
+                .url("http://localhost:8080/api/v1/readers?id=" + readerId)
+                .delete()
+                .build();
+
+        try (Response deleteResponse = client.newCall(deleteRequest).execute()) {
+            Assertions.assertThat(deleteResponse.code()).isEqualTo(200);
+        }
+
+
+        Request getRequest = new Request.Builder()
+                .url("http://localhost:8080/api/v1/readers?id=" + readerId)
+                .get()
+                .build();
+
+        try (Response getResponse = client.newCall(getRequest).execute()) {
+            Assertions.assertThat(getResponse.code()).isEqualTo(404);
         }
     }
 }

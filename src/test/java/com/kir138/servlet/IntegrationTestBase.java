@@ -36,6 +36,7 @@ public class IntegrationTestBase {
             EntityTransaction entityTransaction = entityManager.getTransaction();
             entityTransaction.begin();
 
+            entityManager.createQuery("delete from Book").executeUpdate();
             entityManager.createQuery("delete from Reader").executeUpdate();
             entityManager.getTransaction().commit();
         }
