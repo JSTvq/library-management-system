@@ -5,10 +5,12 @@ import com.kir138.model.dto.BorrowReportDto;
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class BorrowReportService {
     private final BorrowReportMapper borrowReportMapper;
     private final BorrowReportRepositoryImpl borrowReportRepositoryImpl;

@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,7 @@ import java.util.Scanner;
 //curl GET http://localhost:8080/api/v1/reader/312
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class ReaderController extends HttpServlet {
     private final ReaderService readerService;
     private final ObjectMapper objectMapper;

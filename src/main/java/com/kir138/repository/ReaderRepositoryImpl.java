@@ -5,14 +5,13 @@ import com.kir138.model.entity.Book;
 import com.kir138.model.entity.Reader;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class ReaderRepositoryImpl extends SimpleCrudRepository<Reader, Long> implements ReaderRepository {
 
-    public ReaderRepositoryImpl(Class<Reader> entityClass) {
-        super(entityClass);
-    }
 
     /**
      * Оптимизация с использованием JOIN FETCH

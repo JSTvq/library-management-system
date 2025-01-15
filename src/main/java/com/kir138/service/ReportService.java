@@ -12,11 +12,13 @@ import com.kir138.model.entity.Reader;
 import com.kir138.repository.BorrowReportRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Service
 public class ReportService {
     private final BookMapper bookMapper;
     private final BorrowReportMapper borrowReportMapper;

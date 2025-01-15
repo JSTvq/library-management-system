@@ -1,4 +1,4 @@
-package com.kir138.servlet;
+/*package com.kir138.servlet;
 import com.kir138.mapper.BookMapper;
 import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.mapper.ReaderMapper;
@@ -56,4 +56,4 @@ public class ConfigureServerServlet {
         server.start();
         server.join();
     }
-}
+}*/

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
+@RestController
 public class ReturnController extends HttpServlet {
     private final BookService bookService;
     private final ObjectMapper objectMapper;

@@ -2,7 +2,9 @@ package com.kir138.mapper;
 
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.model.dto.BorrowReportDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BorrowReportMapper {
     public BorrowReportDto toBorrowReport(BorrowReport borrowReport) {
         return BorrowReportDto.builder()

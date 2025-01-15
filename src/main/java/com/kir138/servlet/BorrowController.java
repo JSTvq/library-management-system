@@ -1,12 +1,15 @@
 package com.kir138.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kir138.model.entity.BorrowReport;
 import com.kir138.service.BookService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,9 +18,22 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class BorrowController extends HttpServlet {
     private final BookService bookService;
     private final ObjectMapper objectMapper;
+
+    /*@GetMapping({"/{id"})
+    public BorrowReport getById(@PathVariable Long id) {
+        return bookService.getBookById(id);
+    }*/
+
+    @PostMapping("/borrow")
+    @ResponseStatus(HttpStatus.OK)
+    public void borrowBook(@RequestParam Long readerId, @RequestParam Long bookId) {
+        log.info("POST /api/v1/books/borrow - читатель {} берет книгу {}", readerId, bookId);
+        bookService.borrowBook(readerId, bookId);
+    }
 
     /**
      * Взятие книги читателем

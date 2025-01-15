@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,9 +19,12 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class BorrowReportController extends HttpServlet {
     private final ReportService reportService;
     private final ObjectMapper objectMapper;
+
+
 
     /**
      * Отчет о возвращенных книгах за определенный период. Кол-во, автор, читатель
