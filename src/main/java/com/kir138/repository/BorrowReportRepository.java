@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface BorrowReportRepository extends CrudRepository<BorrowReport, Long> {
+public interface BorrowReportRepository extends JpaRepository<BorrowReport, Long>, BorrowReportCustom {
 
     Optional<BorrowReport> findExistingBorrowReport(Long book);
 }

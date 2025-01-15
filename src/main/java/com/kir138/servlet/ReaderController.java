@@ -1,33 +1,59 @@
 package com.kir138.servlet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kir138.model.dto.ReaderDto;
 import com.kir138.model.dto.ReaderRegistrationRq;
 import com.kir138.service.ReaderService;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
-//curl GET http://localhost:8080/api/v1/reader/312
+//curl GET http://localhost:8080/api/v1/readers/1
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api/v1/readers")
 @RestController
-public class ReaderController extends HttpServlet {
+public class ReaderController {
     private final ReaderService readerService;
-    private final ObjectMapper objectMapper;
 
-    @Override
+    @GetMapping("/{id}")
+    public ReaderDto getReaderById(@PathVariable Long id) {
+        log.info("GET /api/v1/readers/{} - получение книги по id", id);
+       return readerService.getReaderById(id);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReaderDto saveOrUpdateReader(@RequestBody ReaderRegistrationRq readerRegistrationRq) {
+        log.info("POST /api/v1/readers - начало обработки запроса");
+        ReaderDto readerDto = readerService.saveOrUpdateReader(readerRegistrationRq);
+        log.info("POST /api/v1/readers - успешно добавлен/обновлен " +
+                "читатель с id {}", readerDto.getId());
+        return readerDto;
+    }
+
+    @GetMapping
+    public List<ReaderDto> getAllReaders() {
+        log.info("GET /api/v1/readers - получение всех читателей");
+        return readerService.getAllReaders();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteReader(@PathVariable Long id) {
+        log.info("DELETE /api/v1/readers/{} - удаление читателя по id", id);
+        readerService.deleteReader(id);
+    }
+
+    /*@Override
     protected void doGet(HttpServletRequest req,
                          HttpServletResponse resp) throws ServletException, IOException {
 
@@ -56,9 +82,9 @@ public class ReaderController extends HttpServlet {
         }
     }
 
-    /**
+    *//**
      * Добавление читателя(Reader)
-     */
+     *//*
     @Override
     protected void doPost(HttpServletRequest req,
                           HttpServletResponse resp) throws IOException {
@@ -130,18 +156,18 @@ public class ReaderController extends HttpServlet {
         objectMapper.writeValue(resp.getWriter(), error);
     }
 
-    /**
+    *//**
      * Валидация данных читателя
-     */
+     *//*
     private void validateReaderRegistrationRq(ReaderRegistrationRq reader) {
         if (reader.getName() == null || reader.getName().trim().isEmpty()) {
             throw new RuntimeException("Имя читателя не может быть пустым");
         }
     }
 
-    /**
+    *//**
      * Валидация параметра id
-     */
+     *//*
     private boolean isValidIdParam(String idParam) {
         if (idParam == null) {
             return false;
@@ -152,7 +178,7 @@ public class ReaderController extends HttpServlet {
         } catch (NumberFormatException e) {
             return false;
         }
-    }
+    }*/
 }
 
 

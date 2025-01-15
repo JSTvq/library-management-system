@@ -1,28 +1,30 @@
 package com.kir138.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kir138.service.BookService;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-public class ReturnController extends HttpServlet {
+@RequestMapping("/api/v1/return")
+@Slf4j
+public class ReturnController {
     private final BookService bookService;
-    private final ObjectMapper objectMapper;
 
     /**
      * Возврат книги читателем
      */
-    @Override
+    @PostMapping
+    public void returnBook(@RequestParam Long reportId) {
+        log.info("POST api/v1/return - книга {} возвращена", reportId);
+        bookService.returnBook(reportId);
+    }
+
+    /*@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
         try {
@@ -49,5 +51,5 @@ public class ReturnController extends HttpServlet {
         Map<String, String> error = new HashMap<>();
         error.put("error", message);
         objectMapper.writeValue(resp.getWriter(), error);
-    }
+    }*/
 }

@@ -2,7 +2,6 @@ package com.kir138.model.dto;
 
 import com.kir138.model.entity.Reader;
 import lombok.*;
-
 import java.util.Objects;
 
 @Builder

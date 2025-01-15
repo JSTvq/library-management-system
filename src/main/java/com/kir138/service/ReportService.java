@@ -1,16 +1,13 @@
 package com.kir138.service;
 
-import com.kir138.connect.HibernateUtil;
 import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.model.dto.BorrowReportDto;
-import com.kir138.model.dto.BorrowReportRegistrationRq;
 import com.kir138.model.entity.Book;
 import com.kir138.model.dto.BookDto;
 import com.kir138.mapper.BookMapper;
 import com.kir138.model.entity.BorrowReport;
-import com.kir138.model.entity.Reader;
-import com.kir138.repository.BorrowReportRepositoryImpl;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +20,14 @@ public class ReportService {
     private final BookMapper bookMapper;
     private final BorrowReportMapper borrowReportMapper;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     /**
      * Метод для получения списка всех книг, взятых читателями за последний месяц.
      */
     public List<BookDto> getBooksBorrowedInLastMonth() {
-        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
+        try {
             LocalDate localDate = LocalDate.now().minusMonths(1);
             String hql = "select br.book from BorrowReport br where br.borrowDate >= :date";
 
@@ -36,6 +36,8 @@ public class ReportService {
                     .getResultStream()
                     .map(bookMapper::toBook)
                     .toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -44,7 +46,7 @@ public class ReportService {
      * дольше двух недель (учитывая дату выдачи).
      */
     public List<BookDto> getOverdueBooksMoreThanTwoWeeks() {
-        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
+        try {
             LocalDate localDate = LocalDate.now().minusDays(14);
             String hql = "select br.book from BorrowReport br where br.borrowDate <= :date and br.isReturn = false";
 
@@ -53,6 +55,8 @@ public class ReportService {
                     .getResultStream()
                     .map(bookMapper::toBook)
                     .toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -62,7 +66,7 @@ public class ReportService {
     public List<BorrowReportDto> findByReaderIdAndBorrowDateBetween(Long readerId, LocalDate fromDate,
                                                                  LocalDate toDate) {
 
-        try (EntityManager entityManager = HibernateUtil.getEntityManager()) {
+        try {
             return entityManager.createQuery("select br from BorrowReport br " +
                             "where br.reader.id = :reader_id and br.borrowDate " +
                             "between :fromDate and :toDate", BorrowReport.class)
@@ -73,10 +77,8 @@ public class ReportService {
                     .stream()
                     .map(borrowReportMapper::toBorrowReport)
                     .toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-
-
-
     }
 }

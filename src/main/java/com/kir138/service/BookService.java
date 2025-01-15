@@ -6,9 +6,9 @@ import com.kir138.model.dto.BookRegistrationRq;
 import com.kir138.model.entity.Book;
 import com.kir138.model.entity.BorrowReport;
 import com.kir138.model.entity.Reader;
-import com.kir138.repository.BookRepositoryImpl;
-import com.kir138.repository.BorrowReportRepositoryImpl;
-import com.kir138.repository.ReaderRepositoryImpl;
+import com.kir138.repository.BookRepository;
+import com.kir138.repository.BorrowReportRepository;
+import com.kir138.repository.ReaderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,31 +21,31 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class BookService {
-    private final BookRepositoryImpl bookRepositoryImpl;
+    private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final BorrowReportRepositoryImpl borrowReportRepositoryImpl;
-    private final ReaderRepositoryImpl readerRepositoryImpl;
+    private final BorrowReportRepository borrowReportRepository;
+    private final ReaderRepository readerRepository;
 
     public BookDto saveOrUpdateBook(BookRegistrationRq request) {
         Book book = bookMapper.toBook(request);
-        return bookMapper.toBook(bookRepositoryImpl.save(book));
+        return bookMapper.toBook(bookRepository.save(book));
     }
 
     public List<BookDto> getAllBook() {
-        return bookRepositoryImpl.findAll()
+        return bookRepository.findAll()
                 .stream()
                 .map(bookMapper::toBook)
                 .toList();
     }
 
     public BookDto getBookById(Long id) {
-        return bookRepositoryImpl.findById(id)
+        return bookRepository.findById(id)
                 .map(bookMapper::toBook)
                 .orElseThrow(() -> new IllegalArgumentException("Книга с таким id не найдена"));
     }
 
     public void deleteBook(Long id) {
-        bookRepositoryImpl.deleteById(id);
+        bookRepository.deleteById(id);
     }
 
     /**
@@ -54,9 +54,9 @@ public class BookService {
     @Transactional
     public void borrowBook(Long readerId, Long bookId) {
 
-        Reader reader = readerRepositoryImpl.findById(readerId).orElseThrow(()
+        Reader reader = readerRepository.findById(readerId).orElseThrow(()
                 -> new EntityNotFoundException("Читатель не найден"));
-        Book book = bookRepositoryImpl.findById(bookId).orElseThrow(()
+        Book book = bookRepository.findById(bookId).orElseThrow(()
                 -> new EntityNotFoundException("Книга не найдена"));
 
         if (book.getReader() != null) {
@@ -64,16 +64,16 @@ public class BookService {
         }
 
         book.setReader(reader);
-        bookRepositoryImpl.save(book);
+        bookRepository.save(book);
 
-        Optional<BorrowReport> borrowReportOpt = borrowReportRepositoryImpl
+        Optional<BorrowReport> borrowReportOpt = borrowReportRepository
                 .findExistingBorrowReport(bookId);
 
         if (borrowReportOpt.isPresent()) {
             BorrowReport borrowReport = borrowReportOpt.get();
             borrowReport.setIsReturn(false);
             borrowReport.setReader(reader);
-            borrowReportRepositoryImpl.save(borrowReport);
+            borrowReportRepository.save(borrowReport);
         } else {
             BorrowReport newBorrowReport = BorrowReport.builder()
                     .borrowDate(LocalDate.now())
@@ -81,10 +81,9 @@ public class BookService {
                     .book(book)
                     .isReturn(false)
                     .build();
-            borrowReportRepositoryImpl.save(newBorrowReport);
+            borrowReportRepository.save(newBorrowReport);
         }
     }
-
 
     /**
      * Метод для возврата книги (обновление статуса returnStatus).
@@ -92,7 +91,7 @@ public class BookService {
     @Transactional
     public void returnBook(Long reportId) {
 
-        BorrowReport borrowReport = borrowReportRepositoryImpl.findById(reportId)
+        BorrowReport borrowReport = borrowReportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Отчет не найден"));
 
         if (borrowReport.getIsReturn()) {
@@ -101,10 +100,10 @@ public class BookService {
 
         borrowReport.setIsReturn(true);
         borrowReport.setReader(null);
-        borrowReportRepositoryImpl.save(borrowReport);
+        borrowReportRepository.save(borrowReport);
 
         Book book = borrowReport.getBook();
         book.setReader(null);
-        bookRepositoryImpl.save(book);
+        bookRepository.save(book);
     }
 }
