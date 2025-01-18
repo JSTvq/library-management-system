@@ -1,4 +1,4 @@
-package com.kir138.servlet;
+package com.kir138.controller;
 
 import com.kir138.model.dto.BookDto;
 import com.kir138.model.dto.BookRegistrationRq;

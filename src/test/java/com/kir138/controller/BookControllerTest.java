@@ -1,4 +1,4 @@
-package com.kir138.servlet;
+package com.kir138.controller;
 
 public class BookControllerTest extends IntegrationTestBase{
 

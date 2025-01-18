@@ -1,4 +1,4 @@
-package com.kir138.servlet;
+package com.kir138.controller;
 
 import com.kir138.service.BookService;
 import lombok.RequiredArgsConstructor;
