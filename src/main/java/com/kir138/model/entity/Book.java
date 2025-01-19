@@ -22,15 +22,16 @@ public class Book {
     private Long id;
     @Column(unique = true, nullable = false)
     private String title;
+    @Column(unique = true)
     private String author;
     private Integer year;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reader_id")
     private Reader reader;
+    private BookStatus status;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
         return Objects.equals(id, book.id);
@@ -49,5 +50,9 @@ public class Book {
                 ", author='" + author + '\'' +
                 ", year=" + year +
                 '}';
+    }
+
+    public enum BookStatus {
+        PENDING_RETURN, SENDED_PENDING_RETURN, RETURNED
     }
 }

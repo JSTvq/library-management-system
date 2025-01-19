@@ -1,5 +1,7 @@
 package com.kir138.service;
 
+import com.kir138.exception.ErrorCode;
+import com.kir138.exception.ServiceException;
 import com.kir138.model.dto.ReaderRegistrationRq;
 import com.kir138.model.entity.Reader;
 import com.kir138.model.dto.ReaderDto;
@@ -30,7 +32,7 @@ public class ReaderService {
     public ReaderDto getReaderById(Long id) {
         return readerRepository.findById(id)
                 .map(readerMapper::toReader)
-                .orElseThrow(() -> new IllegalArgumentException("Читатель с id = " + id + " не найден"));
+                .orElseThrow(() -> new ServiceException(ErrorCode.READER_NOT_FOUND, id));
     }
 
     public void deleteReader(Long id) {

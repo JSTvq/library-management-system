@@ -1,7 +1,8 @@
 package com.kir138.controller;
 
+import com.kir138.exception.ErrorResponse;
 import com.kir138.exception.ServiceException;
-import com.kir138.model.dto.Error;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,10 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class MyExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<Error> handle(ServiceException ex) {
-        return ResponseEntity.status(400).body(Error.builder()
+    public ResponseEntity<ErrorResponse> handle(ServiceException ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
                         .message(ex.getMessage())
-                        .code(ex.getMessage())
-                        .build());
+                        .code(ex.getErrorCode().getCode())
+                        .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

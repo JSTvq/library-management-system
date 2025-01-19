@@ -26,9 +26,18 @@ public class BookService {
     private final BorrowReportRepository borrowReportRepository;
     private final ReaderRepository readerRepository;
 
+    @Transactional
     public BookDto saveOrUpdateBook(BookRegistrationRq request) {
-        Book book = bookMapper.toBook(request);
-        return bookMapper.toBook(bookRepository.save(book));
+        return bookRepository.findByAuthor(request.getAuthor())
+                .map(book -> {
+                    book.setTitle(request.getTitle());
+                    book.setYear(request.getYear());
+                    return bookMapper.toBook(bookRepository.save(book));
+                })
+                .orElseGet(() -> {
+                    Book newBook = bookMapper.toBook(request);
+                    return bookMapper.toBook(bookRepository.save(newBook));
+                });
     }
 
     public List<BookDto> getAllBook() {
@@ -42,6 +51,12 @@ public class BookService {
         return bookRepository.findById(id)
                 .map(bookMapper::toBook)
                 .orElseThrow(() -> new IllegalArgumentException("Книга с таким id не найдена"));
+    }
+
+    public BookDto getBookByAuthor(String author) {
+        return bookRepository.findByAuthor(author)
+                .map(bookMapper::toBook)
+                .orElseThrow(() -> new IllegalArgumentException("Книга с таким автором не найдена"));
     }
 
     public void deleteBook(Long id) {

@@ -24,26 +24,21 @@ import java.util.List;
 @RestController
 public class ReaderController {
     private final ReaderService readerService;
-    MyExceptionHandler myExceptionHandler;
 
     @GetMapping("/{id}")
     public ReaderDto getReaderById(@PathVariable Long id) {
         log.info("GET /api/v1/readers/{} - получение книги по id", id);
-       ReaderDto SS = readerService.getReaderById(id).orElseThrow();
+       return readerService.getReaderById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ReaderDto> saveOrUpdateReader(@RequestBody ReaderRegistrationRq readerRegistrationRq) {
-        try {
             log.info("POST /api/v1/readers - начало обработки запроса");
             ReaderDto readerDto = readerService.saveOrUpdateReader(readerRegistrationRq);
             log.info("POST /api/v1/readers - успешно добавлен/обновлен " +
                     "читатель с id {}", readerDto.getId());
             return ResponseEntity.ok(readerDto);
-        } catch (RuntimeException e) {
-
-        }
     }
 
     @GetMapping
