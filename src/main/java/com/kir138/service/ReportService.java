@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,12 +21,14 @@ public class ReportService {
     private final BookMapper bookMapper;
     private final BorrowReportMapper borrowReportMapper;
 
+    //TODO поменять эту херню на что-то другое и переделать сам класс
     @PersistenceContext
     private EntityManager entityManager;
 
     /**
      * Метод для получения списка всех книг, взятых читателями за последний месяц.
      */
+    @Transactional(readOnly = true)
     public List<BookDto> getBooksBorrowedInLastMonth() {
         try {
             LocalDate localDate = LocalDate.now().minusMonths(1);
@@ -45,6 +48,7 @@ public class ReportService {
      * Метод для получения списка книг, которые находятся на руках у читателей
      * дольше двух недель (учитывая дату выдачи).
      */
+    @Transactional(readOnly = true)
     public List<BookDto> getOverdueBooksMoreThanTwoWeeks() {
         try {
             LocalDate localDate = LocalDate.now().minusDays(14);
@@ -63,6 +67,7 @@ public class ReportService {
     /**
      * Отчет, сколько книг взял читатель за определенные период (fromDate, toDate, readerId)
      */
+    @Transactional(readOnly = true)
     public List<BorrowReportDto> findByReaderIdAndBorrowDateBetween(Long readerId, LocalDate fromDate,
                                                                  LocalDate toDate) {
 

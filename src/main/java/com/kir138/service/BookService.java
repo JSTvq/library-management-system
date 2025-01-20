@@ -1,5 +1,7 @@
 package com.kir138.service;
 
+import com.kir138.exception.ErrorCode;
+import com.kir138.exception.ServiceException;
 import com.kir138.mapper.BookMapper;
 import com.kir138.model.dto.BookDto;
 import com.kir138.model.dto.BookRegistrationRq;
@@ -40,6 +42,7 @@ public class BookService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public List<BookDto> getAllBook() {
         return bookRepository.findAll()
                 .stream()
@@ -47,18 +50,21 @@ public class BookService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public BookDto getBookById(Long id) {
         return bookRepository.findById(id)
                 .map(bookMapper::toBook)
-                .orElseThrow(() -> new IllegalArgumentException("Книга с таким id не найдена"));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOOK_NOT_FOUND_BY_ID, id));
     }
 
+    @Transactional(readOnly = true)
     public BookDto getBookByAuthor(String author) {
         return bookRepository.findByAuthor(author)
                 .map(bookMapper::toBook)
-                .orElseThrow(() -> new IllegalArgumentException("Книга с таким автором не найдена"));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BOOK_NOT_FOUND_BY_AUTHOR, author));
     }
 
+    @Transactional
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
     }
@@ -70,12 +76,12 @@ public class BookService {
     public void borrowBook(Long readerId, Long bookId) {
 
         Reader reader = readerRepository.findById(readerId).orElseThrow(()
-                -> new EntityNotFoundException("Читатель не найден"));
+                -> new ServiceException(ErrorCode.READER_NOT_FOUND_BY_ID, readerId));
         Book book = bookRepository.findById(bookId).orElseThrow(()
-                -> new EntityNotFoundException("Книга не найдена"));
+                -> new ServiceException(ErrorCode.BOOK_NOT_FOUND_BY_ID, bookId));
 
         if (book.getReader() != null) {
-            throw new IllegalStateException("Книга уже взята другим читателем");
+            throw new ServiceException(ErrorCode.BOOK_HAS_NOT_BEEN_RETURNED, bookId);
         }
 
         book.setReader(reader);
@@ -107,10 +113,10 @@ public class BookService {
     public void returnBook(Long reportId) {
 
         BorrowReport borrowReport = borrowReportRepository.findById(reportId)
-                .orElseThrow(() -> new EntityNotFoundException("Отчет не найден"));
+                .orElseThrow(() -> new ServiceException(ErrorCode.BORROW_REPORT_NOT_FOUND, reportId));
 
         if (borrowReport.getIsReturn()) {
-            throw new IllegalStateException("Книга уже была возвращена");
+            throw new ServiceException(ErrorCode.BOOK_RETURNED, reportId);
         }
 
         borrowReport.setIsReturn(true);
