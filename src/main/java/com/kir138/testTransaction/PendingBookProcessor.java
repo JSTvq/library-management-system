@@ -12,25 +12,44 @@ import java.util.List;
 /*@Service
 @RequiredArgsConstructor
 public class PendingBookProcessor {
+    private final PendingBookProcessor self;
     private final BookRepository bookRepository;
 
     @Scheduled(cron = "0 0 0 * * *") // at 00:00 new *
-    @Transactional // на базах есть прибивалки транзакций
+    @Transactional(readOnly = true) // на базах есть прибивалки транзакций
     public void processPendingBooks() {
-        List<Book> bookList = bookRepository.findAllByStatus_PendingReturn();
+        List<Book> bookList = bookRepository.findAllByStatus();
 
         for (Book book : bookList) {
-            httpCall(book); // положить в кафку / раббит
-            update(book);
+            try {
+                httpCall(book);
+                self.update(book);
+            } catch (Exception e) {
+                System.out.println("ошибка обработки книги " + book.getId() + " " + e.getMessage());
+            }
         }
     }
 
+    @Transactional
     void update(Book book) {
         book.setStatus(Book.BookStatus.SENDED_PENDING_RETURN);
+        bookRepository.save(book);
     }
 
     // псевдокод
     // http up to 60 sec
-    public void httpCall(Book book) {
+    public void httpCall(Book book) throws InterruptedException {
+        Thread.sleep(60000);
     }
 }*/
+
+    /*@Async
+    public CompletableFuture<Void> processBook(Book book) {
+        try {
+            httpCall(book); // положить в кафку / раббит
+            self.update(book);
+        } catch (Exception e) {
+            System.out.println("ошибка обработки книги " + book.getId() + " " + e.getMessage());
+        }
+        return CompletableFuture.completedFuture(null);
+    }*/

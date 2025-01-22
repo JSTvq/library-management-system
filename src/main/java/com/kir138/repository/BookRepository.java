@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
-    //List<Book> findAllByStatus_PendingReturn();
+    //List<Book> findAllByStatus();
     Optional<Book> findByAuthor(String title);
 }
