@@ -5,20 +5,21 @@ import com.kir138.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/*@Service
+@Service
 @RequiredArgsConstructor
 public class PendingBookProcessor {
     private final PendingBookProcessor self;
     private final BookRepository bookRepository;
 
     @Scheduled(cron = "0 0 0 * * *") // at 00:00 new *
-    @Transactional(readOnly = true) // на базах есть прибивалки транзакций
+    // на базах есть прибивалки транзакций
     public void processPendingBooks() {
-        List<Book> bookList = bookRepository.findAllByStatus();
+        List<Book> bookList = bookRepository.findAllPendingReturnBooks();
 
         for (Book book : bookList) {
             try {
@@ -30,7 +31,7 @@ public class PendingBookProcessor {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void update(Book book) {
         book.setStatus(Book.BookStatus.SENDED_PENDING_RETURN);
         bookRepository.save(book);
@@ -41,7 +42,7 @@ public class PendingBookProcessor {
     public void httpCall(Book book) throws InterruptedException {
         Thread.sleep(60000);
     }
-}*/
+}
 
     /*@Async
     public CompletableFuture<Void> processBook(Book book) {

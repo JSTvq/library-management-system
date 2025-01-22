@@ -18,11 +18,20 @@ public class BorrowReportService {
 
     @Transactional
     public BorrowReportDto saveOrUpdateBorrowReport(BorrowReport borrowReport) {
-        //TODO написать логику обновления
-        return borrowReportMapper.toBorrowReport(borrowReportRepository.save(borrowReport));
+        return borrowReportRepository.findById(borrowReport.getId())
+                .map(br -> {
+                    br.setBorrowDate(borrowReport.getBorrowDate());
+                    br.setBook(borrowReport.getBook());
+                    br.setReader(borrowReport.getReader());
+                    br.setIsReturn(borrowReport.getIsReturn());
+                    return borrowReportMapper.toBorrowReport(borrowReportRepository.save(br));
+                })
+                .orElseGet(() -> {
+                    return borrowReportMapper.toBorrowReport(borrowReportRepository.save(borrowReport));
+                });
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<BorrowReportDto> getAllBorrowReport() {
         return borrowReportRepository.findAll()
                 .stream()

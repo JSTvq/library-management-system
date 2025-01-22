@@ -21,9 +21,16 @@ public class ReaderService {
 
     @Transactional
     public ReaderDto saveOrUpdateReader(ReaderRegistrationRq request) {
-        //TODO написать логику обновления
-        Reader reader = readerMapper.toReader(request);
-        return readerMapper.toReader(readerRepository.save(reader));
+        return readerRepository.findById(request.getId())
+                .map(getReader -> {
+            getReader.setEmail(request.getEmail());
+            getReader.setName(request.getName());
+            return readerMapper.toReader(readerRepository.save(getReader));
+        })
+                .orElseGet(() -> {
+                    Reader reader = readerMapper.toReader(request);
+                    return readerMapper.toReader(readerRepository.save(reader));
+                });
     }
 
     @Transactional(readOnly = true)
