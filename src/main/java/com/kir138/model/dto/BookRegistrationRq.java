@@ -1,6 +1,5 @@
 package com.kir138.model.dto;
 
-import com.kir138.model.entity.Reader;
 import lombok.*;
 import java.util.Objects;
 
@@ -13,7 +12,7 @@ public class BookRegistrationRq {
     private String title;
     private String author;
     private Integer year;
-    private Reader reader;
+    private ReaderDto reader;
 
     @Override
     public boolean equals(Object o) {
