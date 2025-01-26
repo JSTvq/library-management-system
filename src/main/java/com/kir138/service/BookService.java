@@ -127,4 +127,17 @@ public class BookService {
         book.setReader(null);
         bookRepository.save(book);
     }
+
+    public void addBooks(int n) {
+        for (int i = 1; i <= n; i++) {
+            Book book = Book.builder()
+                    .author("Author_new" + i)
+                    .title("Title_new" + i)
+                    .year(2000 + i)
+                    .status(Book.BookStatus.SENDED_PENDING_RETURN)
+                    .build();
+
+            bookRepository.save(book);
+        }
+    }
 }
