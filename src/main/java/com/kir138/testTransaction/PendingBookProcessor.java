@@ -2,8 +2,8 @@ package com.kir138.testTransaction;
 
 import com.kir138.model.entity.Book;
 import com.kir138.repository.BookRepository;
-import com.kir138.service.BookService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +12,8 @@ import java.util.List;
 
 @Service
 public class PendingBookProcessor {
-    private final PendingBookProcessor self;
     private final BookRepository bookRepository;
+    private final PendingBookProcessor self;
 
     public PendingBookProcessor(@Lazy PendingBookProcessor self,
                                 BookRepository bookRepository) {
@@ -23,25 +23,28 @@ public class PendingBookProcessor {
 
     //@Scheduled(cron = "0 0 0 * * *") // at 00:00 new *
     // на базах есть прибивалки транзакций
-    @Transactional
     public void processPendingBooks() {
-        List<Book> bookList = bookRepository.findAllByStatus(Book.BookStatus.RETURNED);
+        Pageable pageable = Pageable.ofSize(100);
+        List<Book> bookList = bookRepository.findAllByStatus(Book.BookStatus.RETURNED, pageable);
 
-        for (Book book : bookList) {
-            try {
-                httpCall(book);
-                book.setStatus(Book.BookStatus.SENDED_PENDING_RETURN);
-                self.bookRepository.save(book);
-            } catch (Exception e) {
-                System.out.println("ошибка обработки книги " + book.getId() + " " + e.getMessage());
+        while (!bookList.isEmpty()) {
+            bookList = bookRepository.findAllByStatus(Book.BookStatus.RETURNED, pageable);
+            for (Book book : bookList) {
+                try {
+                    httpCall(book);
+                    self.update(book);
+                } catch (Exception e) {
+                    System.out.println("ошибка обработки книги " + book.getId() + " " + e.getMessage());
+                }
             }
+            pageable.next();
         }
     }
 
-    /*void update(Book book) {
-        book.setStatus(Book.BookStatus.RETURNED);
-        bookService.saveOrUpdateBook(book);
-    }*/
+    @Transactional
+    public void update(Book book) {
+        book.setStatus(Book.BookStatus.RETURNED); //пройдет ли сохранение без селекта?
+    }
 
     // псевдокод
     // http up to 60 sec
