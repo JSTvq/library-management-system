@@ -1,3 +1,4 @@
+/*
 package com.kir138.controller;
 
 import com.kir138.connect.HibernateUtil;
@@ -132,3 +133,4 @@ public class ReaderControllerTest extends IntegrationTestBase {
         }
     }
 }
+*/

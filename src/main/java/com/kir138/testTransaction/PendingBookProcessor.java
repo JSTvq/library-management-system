@@ -2,7 +2,7 @@ package com.kir138.testTransaction;
 
 import com.kir138.model.entity.Book;
 import com.kir138.repository.BookRepository;
-import lombok.RequiredArgsConstructor;
+import com.kir138.service.BookService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,30 +21,32 @@ public class PendingBookProcessor {
         this.bookRepository = bookRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // at 00:00 new *
-    @Transactional(readOnly = true) // на базах есть прибивалки транзакций
+    //@Scheduled(cron = "0 0 0 * * *") // at 00:00 new *
+    // на базах есть прибивалки транзакций
+    @Transactional
     public void processPendingBooks() {
-        List<Book> bookList = bookRepository.findAllByStatus(Book.BookStatus.SENDED_PENDING_RETURN);
+        List<Book> bookList = bookRepository.findAllByStatus(Book.BookStatus.RETURNED);
 
         for (Book book : bookList) {
             try {
                 httpCall(book);
-                self.update(book);
+                book.setStatus(Book.BookStatus.SENDED_PENDING_RETURN);
+                self.bookRepository.save(book);
             } catch (Exception e) {
                 System.out.println("ошибка обработки книги " + book.getId() + " " + e.getMessage());
             }
         }
     }
 
-    @Transactional
-    void update(Book book) {
-        book.setStatus(Book.BookStatus.SENDED_PENDING_RETURN);
-    }
+    /*void update(Book book) {
+        book.setStatus(Book.BookStatus.RETURNED);
+        bookService.saveOrUpdateBook(book);
+    }*/
 
     // псевдокод
     // http up to 60 sec
     public void httpCall(Book book) throws InterruptedException {
-        Thread.sleep(60000);
+        Thread.sleep(1);
     }
 }
 

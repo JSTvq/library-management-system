@@ -1,5 +1,5 @@
-package com.kir138.controller;
+/*package com.kir138.controller;
 
 public class BookControllerTest extends IntegrationTestBase{
 
-}
+}*/

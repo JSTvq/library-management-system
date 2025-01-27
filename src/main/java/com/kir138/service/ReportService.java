@@ -1,6 +1,6 @@
 package com.kir138.service;
 
-import com.kir138.mapper.BorrowReportMapper;
+/*import com.kir138.mapper.BorrowReportMapper;
 import com.kir138.model.dto.BorrowReportDto;
 import com.kir138.model.entity.Book;
 import com.kir138.model.dto.BookDto;
@@ -23,11 +23,11 @@ public class ReportService {
 
     //TODO поменять эту херню на что-то другое и переделать сам класс
     @PersistenceContext
-    private EntityManager entityManager;
+    //private EntityManager entityManager;
 
-    /**
+    *//**
      * Метод для получения списка всех книг, взятых читателями за последний месяц.
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<BookDto> getBooksBorrowedInLastMonth() {
         try {
@@ -44,10 +44,10 @@ public class ReportService {
         }
     }
 
-    /**
+    *//**
      * Метод для получения списка книг, которые находятся на руках у читателей
      * дольше двух недель (учитывая дату выдачи).
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<BookDto> getOverdueBooksMoreThanTwoWeeks() {
         try {
@@ -64,9 +64,9 @@ public class ReportService {
         }
     }
 
-    /**
+    *//**
      * Отчет, сколько книг взял читатель за определенные период (fromDate, toDate, readerId)
-     */
+     *//*
     @Transactional(readOnly = true)
     public List<BorrowReportDto> findByReaderIdAndBorrowDateBetween(Long readerId, LocalDate fromDate,
                                                                  LocalDate toDate) {
@@ -86,4 +86,4 @@ public class ReportService {
             throw new RuntimeException(e);
         }
     }
-}
+}*/

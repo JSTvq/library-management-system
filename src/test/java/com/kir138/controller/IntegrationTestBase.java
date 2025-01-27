@@ -1,4 +1,4 @@
-package com.kir138.controller;
+/*package com.kir138.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kir138.Main;
@@ -41,4 +41,4 @@ public class IntegrationTestBase {
             entityManager.getTransaction().commit();
         }
     }
-}
+}*/

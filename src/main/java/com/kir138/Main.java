@@ -1,6 +1,7 @@
 package com.kir138;
 
 import com.kir138.service.BookService;
+import com.kir138.testTransaction.PendingBookProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -13,7 +14,9 @@ public class Main {
         SpringApplication.run(Main.class, args);
 
         //BookService bookService = context.getBean(BookService.class);
+        //PendingBookProcessor pendingBookProcessor = context.getBean(PendingBookProcessor.class);
 
         //bookService.addBooks(10000);
+
     }
 }
