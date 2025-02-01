@@ -16,9 +16,12 @@ public class AddBooksController {
 
     @PostMapping("/add") // Обработчик для метода добавления книг
     public ResponseEntity<String> addBooks(@RequestParam int n) {
+        long startTime = System.currentTimeMillis();
         log.info("Adding " + n + " books");
         bookService.addBooks(n);
 
-        return ResponseEntity.ok("Successfully added " + n + " books.");
+        long endTime = System.currentTimeMillis(); // Окончание отсчёта времени
+        long duration = endTime - startTime;
+        return ResponseEntity.ok("Успешно добавлено " + n + " книг за " + duration + " мс.");
     }
 }

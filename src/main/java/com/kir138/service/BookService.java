@@ -14,9 +14,11 @@ import com.kir138.repository.ReaderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,7 +130,8 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void addBooks(int n) {
+    /*public void addBooks(int n) {
+        List<Book> books = new ArrayList<>();
         for (int i = 1; i <= n; i++) {
             Book book = Book.builder()
                     .author("Author_new" + i)
@@ -136,8 +139,35 @@ public class BookService {
                     .year(2000 + i)
                     .status(Book.BookStatus.SENDED_PENDING_RETURN)
                     .build();
+            books.add(book);
+        }
+        bookRepository.saveAll(books);
+    }*/
 
-            bookRepository.save(book);
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void addBooks(int n) {
+        int batchSize = 10000;
+
+        List<Book> books = new ArrayList<>();
+
+        for (int i = 1; i <= n; i++) {
+            Book book = Book.builder()
+                    .author("Author_new" + i)
+                    .title("Title_new" + i)
+                    .year(2000 + i)
+                    .status(Book.BookStatus.SENDED_PENDING_RETURN)
+                    .build();
+            books.add(book);
+
+            if (i % batchSize == 0) {
+                bookRepository.saveAll(books);
+                bookRepository.flush();
+                books.clear();
+            }
+        }
+        if (!books.isEmpty()) {
+            bookRepository.saveAll(books);
+            bookRepository.flush();
         }
     }
 }
