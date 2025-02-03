@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/books") // Базовый URL для управления книгами
+@RequestMapping("/api/v1") // Базовый URL для управления книгами
 public class AddBooksController {
 
     private final BookService bookService;
 
-    @PostMapping("/add") // Обработчик для метода добавления книг
+    @PostMapping("/addBook") // Обработчик для метода добавления книг
     public ResponseEntity<String> addBooks(@RequestParam int n) {
         long startTime = System.currentTimeMillis();
         log.info("Adding " + n + " books");

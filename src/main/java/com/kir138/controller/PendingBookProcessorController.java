@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("api/v1/books/updateProcessor")
+@RequestMapping("api/v1/books")
 public class PendingBookProcessorController {
     private final PendingBookProcessor pendingBookProcessor;
 
-    @PostMapping("/up")
+    @PostMapping("/updateProcessor")
     public void updateBookProcessor() {
         pendingBookProcessor.processPendingBooks();
     }
