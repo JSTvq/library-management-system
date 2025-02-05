@@ -11,10 +11,8 @@ import com.kir138.model.entity.Reader;
 import com.kir138.repository.BookRepository;
 import com.kir138.repository.BorrowReportRepository;
 import com.kir138.repository.ReaderRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -130,23 +128,9 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    /*public void addBooks(int n) {
-        List<Book> books = new ArrayList<>();
-        for (int i = 1; i <= n; i++) {
-            Book book = Book.builder()
-                    .author("Author_new" + i)
-                    .title("Title_new" + i)
-                    .year(2000 + i)
-                    .status(Book.BookStatus.SENDED_PENDING_RETURN)
-                    .build();
-            books.add(book);
-        }
-        bookRepository.saveAll(books);
-    }*/
-
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public void addBooks(int n) {
-        int batchSize = 10000;
+        int batchSize = 1000;
 
         List<Book> books = new ArrayList<>();
 
